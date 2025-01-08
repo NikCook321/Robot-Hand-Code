@@ -1,0 +1,95 @@
+#include <SoftwareSerial.h>
+#include <Servo.h>
+#define tx 11
+#define rx 10
+SoftwareSerial bt(rx, tx); //RX, TX
+
+int sensor1;
+int sensor2;
+int sensor3;
+int sensor4;
+int sensor5;
+int transferval;
+int transferaddr;
+int const motorPin1 = 3;
+int const motorPin2 = 4;
+int const motorPin3 = 5;
+int const motorPin4 = 6;
+int const motorPin5 = 7;
+int sequence = 0;
+
+bool commandMode = false;
+
+Servo objmotor1;
+Servo objmotor2;
+Servo objmotor3;
+Servo objmotor4;
+Servo objmotor5;
+void setup()
+{
+  objmotor1.attach(motorPin1);
+  objmotor2.attach(motorPin2);
+  objmotor3.attach(motorPin3);
+  objmotor4.attach(motorPin4);
+  objmotor5.attach(motorPin5);
+  Serial.begin(38400);
+  bt.begin(38400);
+  pinMode(tx, OUTPUT);
+  pinMode(rx, INPUT);
+}
+
+void loop()
+{
+  if(bt.available()>0)
+  {
+    transferval = bt.read();
+   
+    //Serial.print(sequence);
+    //Serial.print(<": ");
+    //Serial.println(transferval);
+   
+    if(transferval < 7){
+      transferaddr=transferval;
+      //Serial.println(transferaddr);
+    }
+   
+    else {
+    if(transferval>8){
+      transferval = map(transferval, 9, 255, 100, 700);
+    }
+    if(transferaddr == 1){
+      sensor1 = map(transferval, 100, 700, 0, 180);
+    }
+    if(transferaddr == 2){
+      sensor2 = map(transferval, 100, 700, 0, 180);
+    }
+    if(transferaddr == 3){
+      sensor3 = map(transferval, 100, 700, 0, 180);
+    }
+    if(transferaddr == 4){
+      sensor4 = map(transferval, 100, 700, 0, 180);
+    }
+    if(transferaddr == 5){
+      sensor5 = map(transferval, 100, 700, 0, 180);
+    }
+    if(transferaddr == 6){
+      if(transferval==8){
+        Serial.println("test");
+        commandMode=true;
+      }
+      if(transferval==7){
+        Serial.println("test2");
+        commandMode=false;
+      }
+    }
+      if(!commandMode){
+        objmotor1.write(sensor1);
+        objmotor2.write(sensor2);
+        objmotor3.write(sensor3);
+        objmotor4.write(sensor4);
+        objmotor5.write(sensor5);
+      }
+    }
+    delay(10);
+  }
+}
