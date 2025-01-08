@@ -1,0 +1,90 @@
+#include <SoftwareSerial.h>
+#define tx 11
+#define rx 10
+int sensor1;
+int result1;
+int sensor2;
+int result2;
+int sensor3;
+int result3;
+int sensor4;
+int result4;
+int sensor5;
+int result5;
+int button = 7;
+int buttonResult = 7;
+
+SoftwareSerial bt(rx,tx); //RX, TX
+
+void setup()
+{
+  Serial.begin(38400);
+  bt.begin(38400);
+  pinMode(tx, OUTPUT);
+  pinMode(rx, INPUT);
+  pinMode(button,INPUT);
+  Serial.println("test");
+}
+
+void loop()
+{
+  if(digitalRead(button)==HIGH){
+    if(buttonResult==8){
+      buttonResult=7;
+    }else {
+      buttonResult=8;
+    }
+   
+  }
+  sensor1 = analogRead(0);
+  sensor2 = analogRead(1);
+  sensor3 = analogRead(2);
+  sensor4 = analogRead(3);
+  sensor5 = analogRead(4);
+  result1= map(sensor1, 0, 800, 10, 255);
+  result2= map(sensor2, 0, 800, 10, 255);
+  result3= map(sensor3, 0, 800, 10, 255);
+  result4= map(sensor4, 0, 800, 10, 255);
+  result5= map(sensor5, 0, 800, 10, 255);
+  if(result1>255){
+    result1=255;
+  }
+  if(result2>255){
+    result2=255;
+  }
+  if(result3>255){
+    result3=255;
+  }
+  if(result4>255){
+    result4=255;
+  }
+  if(result5>255){
+    result5=255;
+  }
+  bt.write(1);
+  delay(10);
+  bt.write(result1);
+  delay(10);
+  bt.write(2);
+  delay(10);
+  bt.write(result2);
+  delay(10);
+  bt.write(3);
+  delay(10);
+  bt.write(result3);
+  delay(10);
+  bt.write(4);
+  delay(10);
+  bt.write(result4);
+  delay(10);
+  bt.write(5);
+  delay(10);
+  bt.write(result5);
+  delay(10);
+  bt.write(6);
+  delay(10);
+  bt.write(buttonResult);
+  Serial.println(buttonResult);
+  delay(10);
+}
+
